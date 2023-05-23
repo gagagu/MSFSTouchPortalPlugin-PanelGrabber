@@ -6,6 +6,8 @@ It is not perfect an could be much more faster!
 
 More Info will come in the next days
 
+I am using an HDMI Dummy Plug to create an virtual Screen to move the panel to it and grab the screenshots from there.
+
 ## Plugin Installation
 - Download the plugin from plugin directory
 - click the gear icon in Touch Portal and choose "import plugin"
