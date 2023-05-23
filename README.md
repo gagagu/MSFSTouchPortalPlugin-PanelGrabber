@@ -2,8 +2,9 @@
 MSFS 2020 Panel Grabber for Touch Portal
 
 This is Plugin for Touch Portal to show the content of a docked out panel of MSFS 2020.
-It is not perfect an could bemuch more faster!
+It is not perfect an could be much more faster!
 
+More Info will come in the next days
 
 ## Plugin Installation
 - Download the plugin from plugin directory
