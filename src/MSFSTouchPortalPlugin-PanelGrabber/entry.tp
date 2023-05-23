@@ -1,0 +1,1022 @@
+{
+  "sdk": 4,
+  "version": 1,
+  "name": "MSFS Touch Portal Panel Grabber",
+  "id": "MSFSPanelGrabberPlugin",
+  "settings": [],
+  "plugin_start_cmd": "%TP_PLUGIN_FOLDER%MSFSTouchPortalPlugin-PanelGrabber/MSFSTouchPortalPlugin-PanelGrabber.exe",
+  "categories": [
+    {
+      "id": "MSFSPanelGrabberPlugin.Plugin",
+      "name": "MSFS - PanelGrabber",
+      "actions": [
+        {
+          "id": "MSFSPanelGrabberPlugin.Plugin.Action.Init",
+          "name": "MSFS - PanelGrabber - Init PanelGrabber",
+          "prefix": "Plugin",
+          "type": "communicate",
+          "tryInline": true,
+          "format": "Pos X {$MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.PosX$} Pos Y {$MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.PosY$} Split X {$MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.SplitX$} Split Y {$MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.SplitY$} ",
+          "hasHoldFunctionality": true,
+          "data": [
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.PosX",
+              "type": "number",
+              "label": "Grab Pos X",
+              "default": "0",
+              "minValue": "0",
+              "maxValue": "9999",
+              "allowDecimals": "false"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.PosY",
+              "type": "number",
+              "label": "Grab Pos Y",
+              "default": "0",
+              "minValue": "0",
+              "maxValue": "9999",
+              "allowDecimals": "false"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.SplitX",
+              "type": "number",
+              "label": "Amount split X",
+              "default": "1",
+              "minValue": "1",
+              "maxValue": "12",
+              "allowDecimals": "false"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.Init.Data.SplitY",
+              "type": "number",
+              "label": "Amount split Y",
+              "default": "1",
+              "minValue": "1",
+              "maxValue": "12",
+              "allowDecimals": "false"
+            }
+          ]
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.Plugin.Action.Grab",
+          "name": "MSFS - PanelGrabber - Grab Frame",
+          "prefix": "Plugin",
+          "type": "communicate",
+          "tryInline": true,
+          "hasHoldFunctionality": true
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.Plugin.Action.Release",
+          "name": "MSFS - PanelGrabber - Release Memony",
+          "prefix": "Plugin",
+          "type": "communicate",
+          "tryInline": true,
+          "hasHoldFunctionality": true
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow",
+          "name": "MSFS - PanelGrabber - Move Window",
+          "prefix": "Plugin",
+          "type": "communicate",
+          "tryInline": true,
+          "format": "Window Name {$MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.WindowName$} Position X {$MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.PosX$} Position Y {$MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.PosY$} Width {$MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.Width$} Height {$MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.height$}",
+          "hasHoldFunctionality": true,
+          "data": [
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.WindowName",
+              "type": "text",
+              "label": "Windows Name",
+              "default": "AS1000_PFD"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.PosX",
+              "type": "number",
+              "label": "Window Pos X",
+              "default": "0",
+              "minValue": "0",
+              "maxValue": "9999",
+              "allowDecimals": "false"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.PosY",
+              "type": "number",
+              "label": "Window Pos Y",
+              "default": "0",
+              "minValue": "0",
+              "maxValue": "9999",
+              "allowDecimals": "false"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.Width",
+              "type": "number",
+              "label": "Window Width",
+              "default": "50",
+              "minValue": "50",
+              "maxValue": "9999",
+              "allowDecimals": "false"
+            },
+            {
+              "id": "MSFSPanelGrabberPlugin.Plugin.Action.MoveWindow.Data.Height",
+              "type": "number",
+              "label": "Window height",
+              "default": "50",
+              "minValue": "50",
+              "maxValue": "9999",
+              "allowDecimals": "false"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": "MSFSPanelGrabberPlugin.Event.NewFrame",
+          "name": "MSFS - PanelGrabber - New Frame Available",
+          "format": "New Frame Available: $val",
+          "type": "communicate",
+          "valueType": "choice",
+          "valueChoices": [
+            "yes",
+            "no"
+          ],
+          "valueStateId": "MSFSPanelGrabberPlugin.State.NewFrame"
+        }
+      ],
+      "states": [
+        {
+          "id": "MSFSPanelGrabberPlugin.State.NewFrame",
+          "type": "choice",
+          "desc": "MSFS - PanelGrabber - New Frame Available",
+          "default": "not set",
+          "valueChoices": [
+            "yes",
+            "no"
+          ]
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_0_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[0,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_1_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[1,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_2_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[2,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_3_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[3,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_4_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[4,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_5_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[5,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_6_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[6,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_7_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[7,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_8_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[8,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_9_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[9,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_10_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[10,11]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_0",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,0]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_1",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,1]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_2",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,2]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_3",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,3]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_4",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,4]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_5",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,5]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_6",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,6]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_7",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,7]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_8",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,8]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_9",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,9]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_10",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,10]",
+          "default": ""
+        },
+        {
+          "id": "MSFSPanelGrabberPlugin.State.Cell_11_11",
+          "type": "text",
+          "desc": "MSFS - PanelGrabber - Cell [x,y]=[11,11]",
+          "default": ""
+        }
+      ]
+    }
+  ]
+}
