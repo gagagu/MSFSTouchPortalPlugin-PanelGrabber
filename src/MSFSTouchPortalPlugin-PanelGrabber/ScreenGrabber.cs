@@ -15,6 +15,8 @@ using System.Threading;
 using System.Timers;
 using System.Diagnostics.Tracing;
 using System.Reflection;
+using Image = System.Drawing.Image;
+using System.Drawing.Drawing2D;
 
 namespace MSFSTouchPortalPlugin_PanelGrabber
 {
@@ -120,16 +122,24 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
         // Touch portal Logger
         private readonly ILogger<PanelGrabber> _logger;
         private readonly ITouchPortalClient _client;
- 
-        private const int _iTileSize = 128; // pixel
+
         private Graphics _gfxScreenshot = null;
-      //  private Rectangle _bounds = new Rectangle();
-        private Size _imageSize = new Size();
-        private Bitmap _screenshot = null;
-        private int _iSplitX = 0;
-        private int _iSplitY = 0;
+        private Graphics _gfxSend = null;
+        private Bitmap _imgScreenshot = null;
+        private Bitmap _imgSend = null;
         private int _iPosX = 0;
         private int _iPosY = 0;
+        private int _iWidth = 0;
+        private int _iHeight = 0;
+        private int _iGridX = 0;
+        private int _iGridY = 0;
+        private int _iTileSize = 0;
+        private long _lCompressionLevel = 100L;
+
+
+        private EncoderParameters _EncoderParameters = new EncoderParameters(1);
+        private System.Drawing.Imaging.Encoder _Encoder = System.Drawing.Imaging.Encoder.Quality;
+        private ImageCodecInfo _jgpEncoder;
 
         /// <summary>
         /// Konstructor
@@ -216,34 +226,15 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
         /// <param name="posY"></param>
         /// <param name="splitX"></param>
         /// <param name="splitY"></param>
-        public void InitGrabber(string posX, string posY, string splitX, string splitY)
+        public void InitGrabber(string posX, string posY, string width, string height, string gridX, string gridY, string tileSize, string compressionLevel)
         {
             try
             {
 
 
-                int iSplitX = 0;
-                int iSplitY = 0;
-                int iPosX = 0;
-                int iPosY = 0;
-     
                 if (_gfxScreenshot != null)
                 {
                     _gfxScreenshot = null;
-                }
-
-
-                //check values
-                if (string.IsNullOrEmpty(splitX))
-                {
-                    _logger?.LogError($"[InitGrabber] SplitX is null");
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(splitY))
-                {
-                    _logger?.LogError($"[InitGrabber] SplitY is null");
-                    return;
                 }
 
                 if (string.IsNullOrEmpty(posX))
@@ -258,16 +249,61 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
                     return;
                 }
 
-             
+                //check values
+                if (string.IsNullOrEmpty(width))
+                {
+                    _logger?.LogError($"[InitGrabber] width is null");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(height))
+                {
+                    _logger?.LogError($"[InitGrabber] height is null");
+                    return;
+                }
+
+
+
+                if (string.IsNullOrEmpty(gridX))
+                {
+                    _logger?.LogError($"[InitGrabber] GridX is null");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(gridY))
+                {
+                    _logger?.LogError($"[InitGrabber] GridY is null");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(tileSize))
+                {
+                    _logger?.LogError($"[InitGrabber] tileSize is null");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(compressionLevel))
+                {
+                    _logger?.LogError($"[InitGrabber] Compression Level is null");
+                    return;
+                }
                 //convert values
 
 
                 try
                 {
-                    int.TryParse(splitX, out iSplitX);
-                    int.TryParse(splitY, out iSplitY);
-                    int.TryParse(posX, out iPosX);
-                    int.TryParse(posY, out iPosY);
+                    int.TryParse(posX, out _iPosX);
+                    int.TryParse(posY, out _iPosY);
+
+                    int.TryParse(width, out _iWidth);
+                    int.TryParse(height, out _iHeight);
+
+                    int.TryParse(gridX, out _iGridX);
+                    int.TryParse(gridY, out _iGridY);
+
+                    int.TryParse(tileSize, out _iTileSize);
+
+                    long.TryParse(compressionLevel, out _lCompressionLevel);
                 }
                 catch
                 {
@@ -275,19 +311,17 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
                     return;
                 }
 
-                if (iSplitX <= 0 || iSplitY <= 0)
-                {
-                    _logger?.LogError($"[InitGrabber] SplitX or SplitY is 0");
-                    return;
-                }
+                _imgScreenshot = new Bitmap(_iWidth, _iHeight, PixelFormat.Format16bppRgb555);
+                _gfxScreenshot = Graphics.FromImage(_imgScreenshot);
 
-                _iSplitX = iSplitX;
-                _iSplitY = iSplitY;
-                _iPosX = iPosX;
-                _iPosY = iPosY;
+                _imgSend = new Bitmap(_iTileSize * _iGridX, _iTileSize * _iGridY, PixelFormat.Format16bppRgb555);
+                _gfxSend = Graphics.FromImage(_imgSend);
+                _gfxSend.CompositingMode = CompositingMode.SourceCopy;
+                _gfxSend.CompositingQuality = CompositingQuality.HighQuality;
+                _gfxSend.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                _gfxSend.SmoothingMode = SmoothingMode.HighQuality;
+                _gfxSend.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                _screenshot = new Bitmap(_iTileSize, _iTileSize, PixelFormat.Format32bppArgb);
-                _gfxScreenshot = Graphics.FromImage(_screenshot);
             }
             catch (Exception ex)
             {
@@ -295,6 +329,9 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
             }
         } // Init Grabber
 
+        /// <summary>
+        /// Grabs the actual Frame
+        /// </summary>
         public void GrabFrame()
         {
             try
@@ -307,24 +344,18 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
                     return;
                 }
 
-                // tile image
-                for (int y = 0; y < _iSplitY; y++)
-                {
-                    for (int x = 0; x < _iSplitX; x++)
-                    {
+                _Encoder = System.Drawing.Imaging.Encoder.Quality;
+                _EncoderParameters = new EncoderParameters(1);
+                _EncoderParameters.Param[0] = new EncoderParameter(_Encoder, _lCompressionLevel);
+                _jgpEncoder = GetEncoder(System.Drawing.Imaging.ImageFormat.Png);
+                _gfxScreenshot.CopyFromScreen(_iPosX, _iPosY, 0, 0, new Size(_iWidth, _iHeight), CopyPixelOperation.SourceCopy);
 
-                        _gfxScreenshot.CopyFromScreen(_iPosX + (x * _iTileSize), _iPosY + (y * _iTileSize), 0, 0, new Size(_iTileSize, _iTileSize), CopyPixelOperation.SourceCopy);
-                        using (var ms = new MemoryStream())
-                        {
-                            _screenshot.Save(ms, ImageFormat.Jpeg);
-                            var SigBase64 = Convert.ToBase64String(ms.GetBuffer()); // Get Base64
-                            _client.StateUpdate("MSFSPanelGrabberPlugin.State.Cell_" + x.ToString() + "_" + y.ToString(), SigBase64);
-                        }
+                var destRect = new Rectangle(0, 0, _iTileSize * _iGridX, _iTileSize * _iGridY);
+                _gfxSend.DrawImage(_imgScreenshot, destRect, 0, 0, _iWidth, _iHeight, GraphicsUnit.Pixel);
 
-                    } // x
-                } // y
-
-
+                // _imgSend = ResizeImage(_imgScreenshot, _iTileSize * _iGridX, _iTileSize * _iGridY);
+                string sBase64 = ImageToBase64(_imgSend, _jgpEncoder, _EncoderParameters);
+                _client.StateUpdate("MSFSPanelGrabberPlugin.State.Cell_0_0", sBase64);
                 _client.StateUpdate("MSFSPanelGrabberPlugin.State.NewFrame", "yes");
             }
             catch (Exception ex)
@@ -333,6 +364,30 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
             }
         }
 
+        /// <summary>
+        /// Convert to String
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="encoder"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public string ImageToBase64(Image image, System.Drawing.Imaging.ImageCodecInfo encoder, EncoderParameters parameter)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                // Convert Image to byte[]
+                image.Save(ms, encoder, parameter);
+
+                byte[] imageBytes = ms.ToArray();
+                // Convert byte[] to base 64 string
+                string base64String = Convert.ToBase64String(imageBytes);
+                return base64String;
+            }
+        }
+
+        /// <summary>
+        /// Release Memory
+        /// </summary>
         public void Release()
         {
             try
@@ -341,12 +396,46 @@ namespace MSFSTouchPortalPlugin_PanelGrabber
                 {
                     _gfxScreenshot = null;
                 }
+                if (_gfxSend != null)
+                {
+                    _gfxSend = null;
+                }
+
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error on Grab");
             }
         }
+
+        /// <summary>
+        /// Get encoder for scecified image format
+        /// </summary>
+        /// <param name="format">image format</param>
+        /// <returns></returns>
+        public static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            try
+            {
+                ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+
+                foreach (ImageCodecInfo codec in codecs)
+                {
+                    if (codec.FormatID == format.Guid)
+                    {
+                        return codec;
+                    }
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+    
 
     } // class
 } // namespace

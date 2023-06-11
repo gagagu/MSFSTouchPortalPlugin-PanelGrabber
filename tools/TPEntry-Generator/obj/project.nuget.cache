@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "1eRcZ1U+sNcvfohnUR7zlIoBCogOwTNdT9HbUhEuFA1nrJJj9y/C0fkz5BTJ6BpvQKAqR02GdlzJ9oIRYaV3rw==",
+  "dgSpecHash": "HajvsbuBZHE3E1aG3/bsKpOM5pAsvZd22F7gR0qWzgO/O9jmo8LsVg6bCpDbELGF206w4Iyb2FOt8CBokpI7NA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\gagagu\\Documents\\Hidrive\\HiDrive\\privat\\Programmierung\\TouchPortal\\TPEntry-Generator\\TPEntry-Generator\\TPEntry-Generator.csproj",
+  "projectFilePath": "E:\\Privat\\HiDrive\\HiDrive\\privat\\Programmierung\\TouchPortal\\TPEntry-Generator\\TPEntry-Generator\\TPEntry-Generator.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\gagagu\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+    "C:\\Users\\eckers.alexander\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
   "logs": []
 }
